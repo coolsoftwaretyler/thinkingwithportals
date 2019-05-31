@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0 auto;
+            max-width: 900px;
+            padding: 2em;
+        }
+
+        portal {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition:
+                transform 0.4s,
+                bottom 0.7s,
+                left 0.7s,
+                opacity 1.0s;
+            box-shadow: 0 0 20px 10px #999;
+            transform: scale(0.4);
+            bottom: calc(20px + 50% * 0.4 - 50%);
+            left: calc(20px + 50% * 0.4 - 50%);
+            z-index: 10000;
+        }
+
+        .portal-reveal {
+            transform: scale(1.0);
+            bottom: 0px;
+            left: 0px;
+        }
+
+        .fade-in {
+            opacity: 1.0;
+        }
+        img {
+            width: 30%;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>Now you're thinking with portals.</h1>
+        <p>
+            I built this site to test out <a href="https://web.dev/hands-on-portals">portals</a>.
+        </p>
+        <p>
+            In order for it to work appropriately, you'll need to run it in <a
+                href="https://www.google.com/chrome/canary/">Chrome Canary</a> with the Portals flag on.
+        </p>
+
+        {{ content }}
+    </main>
+    <footer>
+        Built by <a href="https://ogdenstudios.xyz">Ogden Studios</a>
+    </footer>
+
+    <script>
+        console.log('loaded');
+        if ('HTMLPortalElement' in window) {
+            var links = document.getElementsByTagName('a');
+            for (i = 0; i < links.length; i++) {
+                links[i].addEventListener('click', triggerPortal);
+            }
+        }
+
+        function triggerPortal(e) {
+            e.preventDefault();
+            const portal = document.createElement('portal');
+            if (e.target.tagName === 'IMG') {
+                portal.src = e.target.parentNode.href;
+            } else {
+                portal.src = e.target.href;
+            }
+            portal.classList.add('fade-in');
+            document.body.append(portal);
+            setTimeout(_ => portal.classList.add('portal-reveal'), 10);
+            setTimeout(_ => portal.activate(), 700);
+        }
+    </script>
+</body>
+</html>
